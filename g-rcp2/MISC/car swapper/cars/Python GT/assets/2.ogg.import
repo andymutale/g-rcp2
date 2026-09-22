@@ -1,0 +1,15 @@
+[remap]
+
+importer="ogg_vorbis"
+type="AudioStreamOGGVorbis"
+path="res://.import/2.ogg-1d5029a8edafd6534d5ae962fa9c630f.oggstr"
+
+[deps]
+
+source_file="res://MISC/car swapper/cars/Python GT/assets/2.ogg"
+dest_files=[ "res://.import/2.ogg-1d5029a8edafd6534d5ae962fa9c630f.oggstr" ]
+
+[params]
+
+loop=true
+loop_offset=0

@@ -1,0 +1,15 @@
+[remap]
+
+importer="ogg_vorbis"
+type="AudioStreamOGGVorbis"
+path="res://.import/8.ogg-2c59b978c4f8218a63f6f0ec54425bfb.oggstr"
+
+[deps]
+
+source_file="res://MISC/car swapper/cars/Eclipse T6/assets/8.ogg"
+dest_files=[ "res://.import/8.ogg-2c59b978c4f8218a63f6f0ec54425bfb.oggstr" ]
+
+[params]
+
+loop=true
+loop_offset=0

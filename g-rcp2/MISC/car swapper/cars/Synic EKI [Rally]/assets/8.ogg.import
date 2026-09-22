@@ -1,0 +1,15 @@
+[remap]
+
+importer="ogg_vorbis"
+type="AudioStreamOGGVorbis"
+path="res://.import/8.ogg-1323ff5e649e282f8dd4096892604704.oggstr"
+
+[deps]
+
+source_file="res://MISC/car swapper/cars/Synic EKI [Rally]/assets/8.ogg"
+dest_files=[ "res://.import/8.ogg-1323ff5e649e282f8dd4096892604704.oggstr" ]
+
+[params]
+
+loop=true
+loop_offset=0

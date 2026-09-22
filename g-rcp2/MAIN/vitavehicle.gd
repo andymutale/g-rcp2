@@ -82,7 +82,9 @@ func multivariate(RiseRPM,TorqueRise,BuildUpTorque,EngineFriction,EngineDrag,Off
 
 
 func fastest_wheel(array):
-	var val = -10000000000000000000000000000000000.0
+	# Returns null if array is empty - callers must check for that
+	# (e.g. a car with an empty Powered_Wheels list).
+	var val = -INF
 	var obj
 	
 	for i in array:
@@ -94,7 +96,9 @@ func fastest_wheel(array):
 	return obj
 
 func slowest_wheel(array):
-	var val = 10000000000000000000000000000000000.0
+	# Returns null if array is empty - callers must check for that
+	# (e.g. a car with an empty Powered_Wheels list).
+	var val = INF
 	var obj
 	
 	for i in array:

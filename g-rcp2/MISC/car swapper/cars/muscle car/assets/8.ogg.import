@@ -1,0 +1,15 @@
+[remap]
+
+importer="ogg_vorbis"
+type="AudioStreamOGGVorbis"
+path="res://.import/8.ogg-24288c6535f94c50b3f48cfa336b03f3.oggstr"
+
+[deps]
+
+source_file="res://MISC/car swapper/cars/muscle car/assets/8.ogg"
+dest_files=[ "res://.import/8.ogg-24288c6535f94c50b3f48cfa336b03f3.oggstr" ]
+
+[params]
+
+loop=true
+loop_offset=0

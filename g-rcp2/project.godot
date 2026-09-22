@@ -15,7 +15,7 @@ _global_script_class_icons={
 [application]
 
 config/name="VitaVehicle"
-run/main_scene="res://TEMPLATE.tscn"
+run/main_scene="res://world.tscn"
 config/icon="res://icon.png"
 
 [autoload]

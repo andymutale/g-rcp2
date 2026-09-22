@@ -171,9 +171,6 @@ func _physics_process(_delta):
 	var last_translation = translation
 	
 	if Steer and abs(car.steer)>0:
-		var form1 = 0.0
-		var form2 = car.steering_geometry[1] -translation.x
-		var the
 		var lasttransform = global_transform
 		
 		look_at_from_position(translation,Vector3(car.steering_geometry[0],0,car.steering_geometry[1]),Vector3(0,1,0))

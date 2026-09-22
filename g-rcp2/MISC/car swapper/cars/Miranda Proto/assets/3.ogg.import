@@ -1,0 +1,15 @@
+[remap]
+
+importer="ogg_vorbis"
+type="AudioStreamOGGVorbis"
+path="res://.import/3.ogg-419cc2fbdc04ed4d03f6db8134b0b058.oggstr"
+
+[deps]
+
+source_file="res://MISC/car swapper/cars/Miranda Proto/assets/3.ogg"
+dest_files=[ "res://.import/3.ogg-419cc2fbdc04ed4d03f6db8134b0b058.oggstr" ]
+
+[params]
+
+loop=true
+loop_offset=0

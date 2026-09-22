@@ -1,0 +1,15 @@
+[remap]
+
+importer="ogg_vorbis"
+type="AudioStreamOGGVorbis"
+path="res://.import/5.ogg-b1d5177f4f6f243e9ff50f1abd78c2ec.oggstr"
+
+[deps]
+
+source_file="res://MISC/car swapper/cars/Vistina R4/assets/5.ogg"
+dest_files=[ "res://.import/5.ogg-b1d5177f4f6f243e9ff50f1abd78c2ec.oggstr" ]
+
+[params]
+
+loop=true
+loop_offset=0

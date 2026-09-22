@@ -184,8 +184,8 @@ export var ThresholdStable = 0.01
 export var ClutchGrip = 176.125
 export var ClutchFloatReduction = 27.0
 
-export var ClutchWobble = 2.5*0
-export var ClutchElasticity = 0.2*0
+export var ClutchWobble = 0.0 # disabled (was 2.5) - kept for reference if re-enabling this effect
+export var ClutchElasticity = 0.0 # disabled (was 0.2) - kept for reference if re-enabling this effect
 export var WobbleRate = 0.0
 
 #forced inductions
@@ -303,6 +303,9 @@ func _ready():
 	for i in Powered_Wheels:
 		var wh = get_node(str(i))
 		c_pws.append(wh)
+
+	if c_pws.size() == 0:
+		push_warning(str(name) + ": Powered_Wheels is empty - this car has no driven wheels and will not be able to accelerate.")
 		
 
 func controls():
@@ -562,7 +565,7 @@ func transmission():
 							gasrestricted = false
 		elif GearAssistant[1] == 2:
 			var assistshiftspeed = (GearAssistant[4]/ratio)*GearAssistant[2]
-			var assistdownshiftspeed = (GearAssistant[3]/abs((GearRatios[gear-2]*FinalDriveRatio)*RatioMult))*GearAssistant[2]
+			var assistdownshiftspeed = (GearAssistant[3]/abs((GearRatios[max(gear-2, 0)]*FinalDriveRatio)*RatioMult))*GearAssistant[2]
 			if gear == 0:
 				 if gas:
 					  sassistdel -= 1
@@ -602,7 +605,7 @@ func transmission():
 						revmatch = true
 
 		if sassiststep == -4 and sassistdel<0:
-			sassistdel = GearAssistant[0]/2
+			sassistdel = GearAssistant[0]/2.0
 			if gear<len(GearRatios):
 				actualgear += 1
 			sassiststep = -3
@@ -661,7 +664,7 @@ func transmission():
 		else:
 			ratio = GearRatios[gear-1]*FinalDriveRatio*RatioMult
 		if actualgear>0:
-			var lastratio = GearRatios[gear-2]*FinalDriveRatio*RatioMult
+			var lastratio = GearRatios[max(gear-2, 0)]*FinalDriveRatio*RatioMult
 			su = false
 			sd = false
 			for i in c_pws:
@@ -750,7 +753,7 @@ func transmission():
 					actualgear -= 1
 		else:
 			var assistshiftspeed = (GearAssistant[4]/ratio)*GearAssistant[2]
-			var assistdownshiftspeed = (GearAssistant[3]/abs((GearRatios[gear-2]*FinalDriveRatio)*RatioMult))*GearAssistant[2]
+			var assistdownshiftspeed = (GearAssistant[3]/abs((GearRatios[max(gear-2, 0)]*FinalDriveRatio)*RatioMult))*GearAssistant[2]
 			if gear == 0:
 				 if gas:
 					  sassistdel -= 1
@@ -801,17 +804,7 @@ func drivetrain():
 			rpm -= ((rpmcs*1.0)/clock_mult)*(RevSpeed/1.475)
 		else:
 			rpm += ((rpmcs*1.0)/clock_mult)*(RevSpeed/1.475)
-				
-		if "":
-			rpm = 7000.0
-			Locking = 0.0
-			CoastLocking = 0.0
-			Centre_Locking = 0.0
-			Centre_CoastLocking = 0.0
-			Preload = 1.0
-			Centre_Preload = 1.0
-			ClutchFloatReduction = 0.0
-				
+
 		gearstress = (abs(resistance)*StressFactor)*clutchpedal
 		var stabled = ratio*0.9 +0.1
 		ds_weight = DSWeight/stabled
@@ -837,52 +830,60 @@ func drivetrain():
 			c_locked = 0.0
 		elif c_locked>1.0:
 			c_locked = 1.0
-			
-		var maxd = VitaVehicleSimulation.fastest_wheel(c_pws)
-		var mind = VitaVehicleSimulation.slowest_wheel(c_pws)
-		var what = 0.0
-		
-		var floatreduction = ClutchFloatReduction
 
-		if dsweightrun>0.0:
-			floatreduction = ClutchFloatReduction/dsweightrun
+		if len(c_pws) == 0:
+			# No powered wheels assigned (Powered_Wheels is empty / misconfigured).
+			# Nothing to distribute drivetrain torque to - skip instead of crashing
+			# on a null fastest_wheel() result below.
+			push_warning(str(name) + ": Powered_Wheels is empty, drivetrain will not apply any torque.")
+			dist = 0.0
+			wv_difference = 0.0
+			drivewheels_size = 0.0
 		else:
-			floatreduction = 0.0
-				
-		var stabling = -(GearRatioRatioThreshold -ratio*drivewheels_size)*ThresholdStable
-		if stabling<0.0:
-			stabling = 0.0
+			var maxd = VitaVehicleSimulation.fastest_wheel(c_pws)
+			var what = 0.0
 			
-		currentstable = ClutchStable + stabling
-		currentstable *= (RevSpeed/1.475)
+			var floatreduction = ClutchFloatReduction
 
-		if dsweightrun>0.0:
-			what = (rpm-(((rpmforce*floatreduction)*pow(currentstable,1.0))/(ds_weight/dsweightrun)))
-		else:
-			what = rpm
-			
-		if gear<0.0:
-			dist = maxd.wv + what/ratio
-		else:
-			dist = maxd.wv - what/ratio
-	
-		dist *= (clutchpedal*clutchpedal)
-		
-		if gear == 0:
-			dist *= 0.0
-
-		wv_difference = 0.0
-		drivewheels_size = 0.0
-		for i in c_pws:
-			drivewheels_size += i.w_size/len(c_pws)
-			i.c_p = i.W_PowerBias
-			wv_difference += ((i.wv - what/ratio)/(len(c_pws)))*(clutchpedal*clutchpedal)
-			if gear<0:
-				i.dist = dist*(1-c_locked) + (i.wv + what/ratio)*c_locked
+			if dsweightrun>0.0:
+				floatreduction = ClutchFloatReduction/dsweightrun
 			else:
-				i.dist = dist*(1-c_locked) + (i.wv - what/ratio)*c_locked
+				floatreduction = 0.0
+					
+			var stabling = -(GearRatioRatioThreshold -ratio*drivewheels_size)*ThresholdStable
+			if stabling<0.0:
+				stabling = 0.0
+				
+			currentstable = ClutchStable + stabling
+			currentstable *= (RevSpeed/1.475)
+
+			if dsweightrun>0.0:
+				what = (rpm-(((rpmforce*floatreduction)*pow(currentstable,1.0))/(ds_weight/dsweightrun)))
+			else:
+				what = rpm
+				
+			if gear<0.0:
+				dist = maxd.wv + what/ratio
+			else:
+				dist = maxd.wv - what/ratio
+		
+			dist *= (clutchpedal*clutchpedal)
+			
 			if gear == 0:
-				i.dist *= 0.0
+				dist *= 0.0
+
+			wv_difference = 0.0
+			drivewheels_size = 0.0
+			for i in c_pws:
+				drivewheels_size += i.w_size/len(c_pws)
+				i.c_p = i.W_PowerBias
+				wv_difference += ((i.wv - what/ratio)/(len(c_pws)))*(clutchpedal*clutchpedal)
+				if gear<0:
+					i.dist = dist*(1-c_locked) + (i.wv + what/ratio)*c_locked
+				else:
+					i.dist = dist*(1-c_locked) + (i.wv - what/ratio)*c_locked
+				if gear == 0:
+					i.dist *= 0.0
 		GearAssistant[2] = drivewheels_size
 		resistance = 0.0
 		dsweightrun = dsweight

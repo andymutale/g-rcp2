@@ -1,0 +1,15 @@
+[remap]
+
+importer="ogg_vorbis"
+type="AudioStreamOGGVorbis"
+path="res://.import/6.ogg-c697339d91864c8c94ead20712234584.oggstr"
+
+[deps]
+
+source_file="res://MISC/car swapper/cars/Synic Hyena 4.0/assets/6.ogg"
+dest_files=[ "res://.import/6.ogg-c697339d91864c8c94ead20712234584.oggstr" ]
+
+[params]
+
+loop=true
+loop_offset=0
