@@ -1,4 +1,4 @@
-extends Spatial
+extends Node3D
 
 var pitch = 0.0
 var volume = 0.0
@@ -7,13 +7,13 @@ var fade = 0.0
 var vacuum = 0.0
 var maxfades = 0.0
 
-export var pitch_calibrate = 7500.0
-export var vacuum_crossfade = 0.7
-export var vacuum_loudness = 4.0
-export var crossfade_vvt = 5.0
-export var crossfade_throttle = 0.0
-export var crossfade_influence = 5.0
-export var overall_volume = 1.0
+@export var pitch_calibrate = 7500.0
+@export var vacuum_crossfade = 0.7
+@export var vacuum_loudness = 4.0
+@export var crossfade_vvt = 5.0
+@export var crossfade_throttle = 0.0
+@export var crossfade_influence = 5.0
+@export var overall_volume = 1.0
 
 var pitch_influence = 1.0
 
@@ -78,12 +78,12 @@ func _physics_process(_delta):
 			vol = 0.0
 		elif vol>1.0:
 			vol = 1.0
-		var db = linear2db((vol*maxvol)*(volume*(overall_volume)))
+		var db = linear_to_db((vol*maxvol)*(volume*(overall_volume)))
 		if db<-60.0:
 			db = -60.0
 			
-		i.unit_db = db
-		i.max_db = i.unit_db
+		i.volume_db = db
+		i.max_db = i.volume_db
 		var pit = abs(pitch*maxpitch)
 		if pit>5.0:
 			pit = 5.0

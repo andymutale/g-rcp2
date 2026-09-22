@@ -1,0 +1,38 @@
+[remap]
+
+importer="texture"
+type="CompressedTexture2D"
+uid="uid://b1tj2js7n2jxj"
+path.s3tc="res://.godot/imported/audi_wheel_RR_2.png-c61be53a53afef7505cf41b7c29ec14c.s3tc.ctex"
+metadata={
+"imported_formats": ["s3tc_bptc"],
+"vram_texture": true
+}
+generator_parameters={
+"md5": "fd12880098bc8c1d2f50fc6e663f9bcc"
+}
+
+[deps]
+
+source_file="res://ASSETS/cars/audi_etron_gt/audi_wheel_RR_2.png"
+dest_files=["res://.godot/imported/audi_wheel_RR_2.png-c61be53a53afef7505cf41b7c29ec14c.s3tc.ctex"]
+
+[params]
+
+compress/mode=2
+compress/high_quality=false
+compress/lossy_quality=0.7
+compress/hdr_compression=1
+compress/normal_map=0
+compress/channel_pack=0
+mipmaps/generate=true
+mipmaps/limit=-1
+roughness/mode=0
+roughness/src_normal=""
+process/fix_alpha_border=true
+process/premult_alpha=false
+process/normal_map_invert_y=false
+process/hdr_as_srgb=false
+process/hdr_clamp_exposure=false
+process/size_limit=0
+detect_3d/compress_to=0

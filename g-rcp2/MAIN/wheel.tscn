@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=8 format=3]
 
 [ext_resource path="res://MAIN/wheel.gd" type="Script" id=1]
 [ext_resource path="res://MAIN/misc/tyre smoke/smoke.tscn" type="PackedScene" id=2]
@@ -10,36 +10,36 @@
 [sub_resource type="CubeMesh" id=2]
 size = Vector3( 1, 1, 1 )
 
-[sub_resource type="SpatialMaterial" id=3]
-flags_unshaded = true
-flags_no_depth_test = true
+[sub_resource type="StandardMaterial3D" id=3]
+shading_mode = 0
+no_depth_test = true
 
-[node name="wheel" type="RayCast"]
+[node name="wheel" type="RayCast3D"]
 enabled = true
 script = ExtResource( 1 )
 
-[node name="geometry" type="MeshInstance" parent="."]
+[node name="geometry" type="MeshInstance3D" parent="."]
 visible = false
 mesh = SubResource( 1 )
 script = ExtResource( 3 )
 
-[node name="compress" type="MeshInstance" parent="geometry"]
+[node name="compress" type="MeshInstance3D" parent="geometry"]
 mesh = SubResource( 2 )
-material/0 = SubResource( 3 )
+surface_material_override/0 = SubResource( 3 )
 
-[node name="lateral" type="MeshInstance" parent="geometry"]
+[node name="lateral" type="MeshInstance3D" parent="geometry"]
 mesh = SubResource( 2 )
-material/0 = SubResource( 3 )
+surface_material_override/0 = SubResource( 3 )
 
-[node name="longi" type="MeshInstance" parent="geometry"]
+[node name="longi" type="MeshInstance3D" parent="geometry"]
 mesh = SubResource( 2 )
-material/0 = SubResource( 3 )
+surface_material_override/0 = SubResource( 3 )
 
-[node name="animation" type="Position3D" parent="."]
+[node name="animation" type="Marker3D" parent="."]
 
-[node name="camber" type="Position3D" parent="animation"]
+[node name="camber" type="Marker3D" parent="animation"]
 
-[node name="wheel" type="Position3D" parent="animation/camber"]
+[node name="wheel" type="Marker3D" parent="animation/camber"]
 
 [node name="smoke_dirt" parent="animation/camber" instance=ExtResource( 2 )]
 dirt_type = true
@@ -73,27 +73,27 @@ color = Color( 0.352941, 0.313726, 0.223529, 1 )
 
 [node name="smoke" parent="animation/camber" instance=ExtResource( 2 )]
 
-[node name="fixed" type="Position3D" parent="animation"]
+[node name="fixed" type="Marker3D" parent="animation"]
 
-[node name="fixed_steer" type="Position3D" parent="animation"]
+[node name="fixed_steer" type="Marker3D" parent="animation"]
 
-[node name="fixed_steercamber" type="Position3D" parent="animation"]
+[node name="fixed_steercamber" type="Marker3D" parent="animation"]
 
-[node name="fixed_camber" type="Position3D" parent="animation"]
+[node name="fixed_camber" type="Marker3D" parent="animation"]
 
-[node name="fixed_axle" type="Position3D" parent="animation"]
+[node name="fixed_axle" type="Marker3D" parent="animation"]
 
 [node name="tyremark" parent="animation" instance=ExtResource( 5 )]
 
-[node name="DirectionalLight" type="DirectionalLight" parent="."]
+[node name="DirectionalLight" type="DirectionalLight3D" parent="."]
 editor_only = true
 
-[node name="velocity" type="Position3D" parent="."]
+[node name="velocity" type="Marker3D" parent="."]
 
-[node name="step" type="Position3D" parent="velocity"]
+[node name="step" type="Marker3D" parent="velocity"]
 
-[node name="velocity2" type="Position3D" parent="."]
+[node name="velocity2" type="Marker3D" parent="."]
 
-[node name="step" type="Position3D" parent="velocity2"]
+[node name="step" type="Marker3D" parent="velocity2"]
 
 [editable path="animation/camber/smoke_dirt"]

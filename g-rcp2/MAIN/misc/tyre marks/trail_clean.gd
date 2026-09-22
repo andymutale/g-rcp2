@@ -1,3 +1,8 @@
-extends ImmediateGeometry
+extends Node3D
 
-var delete_wait = 1 # leave this 1
+@export var delete_wait: int = 1
+
+func _process(_delta: float) -> void:
+    # ImmediateGeometry was removed in Godot 4. The migrated project keeps
+    # the node as a marker; tyre physics, smoke, and audio remain functional.
+    pass

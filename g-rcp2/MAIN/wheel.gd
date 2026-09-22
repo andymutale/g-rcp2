@@ -1,25 +1,25 @@
-extends RayCast
+extends RayCast3D
 
-export var RealismOptions = {
+@export var RealismOptions = {
 }
 
-export var Steer = true
-export var Differed_Wheel = ""
-export var SwayBarConnection = ""
+@export var Steer = true
+@export var Differed_Wheel = ""
+@export var SwayBarConnection = ""
 
-export var W_PowerBias = 1.0
-export var TyreSettings = {
+@export var W_PowerBias = 1.0
+@export var TyreSettings = {
 	"GripInfluence": 1.0,
 	"Width (mm)": 185.0,
 	"Aspect Ratio": 60.0,
 	"Rim Size (in)": 14.0
 	}
-export var TyrePressure = 30.0
-export var Camber = 0.0
-export var Caster = 0.0
-export var Toe = 0.0
+@export var TyrePressure = 30.0
+@export var Camber = 0.0
+@export var Caster = 0.0
+@export var Toe = 0.0
 
-export var CompoundSettings = {
+@export var CompoundSettings = {
 	"OptimumTemp": 50.0,
 	"Stiffness": 1.0,
 	"TractionFactor": 1.0,
@@ -30,31 +30,31 @@ export var CompoundSettings = {
 	"BuildupAffection": 1.0,
 	"CoolRate": 0.000075}
 
-export var S_Stiffness = 47.0
-export var S_Damping = 3.5
-export var S_ReboundDamping = 3.5
-export var S_RestLength = 0.0
-export var S_MaxCompression = 0.5
-export var A_InclineArea = 0.2
-export var A_ImpactForce = 1.5
-export var AR_Stiff = 0.5
-export var AR_Elast = 0.1
-export var B_Torque = 15.0
-export var B_Bias = 1.0
-export var B_Saturation = 1.0 # leave this at 1.0 unless you have a heavy vehicle with large wheels, set it higher depending on how big it is
-export var HB_Bias = 0.0
-export var A_Geometry1 = 1.15
-export var A_Geometry2 = 1.0
-export var A_Geometry3 = 0.0
-export var A_Geometry4 = 0.0
-export var Solidify_Axles = NodePath()
-export var ContactABS = true
-export var ESP_Role = ""
-export var ContactBTCS = false
-export var ContactTTCS = false
+@export var S_Stiffness = 47.0
+@export var S_Damping = 3.5
+@export var S_ReboundDamping = 3.5
+@export var S_RestLength = 0.0
+@export var S_MaxCompression = 0.5
+@export var A_InclineArea = 0.2
+@export var A_ImpactForce = 1.5
+@export var AR_Stiff = 0.5
+@export var AR_Elast = 0.1
+@export var B_Torque = 15.0
+@export var B_Bias = 1.0
+@export var B_Saturation = 1.0 # leave this at 1.0 unless you have a heavy vehicle with large wheels, set it higher depending on how big it is
+@export var HB_Bias = 0.0
+@export var A_Geometry1 = 1.15
+@export var A_Geometry2 = 1.0
+@export var A_Geometry3 = 0.0
+@export var A_Geometry4 = 0.0
+@export var Solidify_Axles = NodePath()
+@export var ContactABS = true
+@export var ESP_Role = ""
+@export var ContactBTCS = false
+@export var ContactTTCS = false
 
 
-onready var car = get_parent()
+@onready var car = get_parent()
 
 var dist = 0.0
 var w_size = 1.0
@@ -168,23 +168,26 @@ var velocity_last = Vector3(0,0,0)
 var velocity2_last = Vector3(0,0,0)
 
 func _physics_process(_delta):
-	var last_translation = translation
+	var last_translation = position
 	
 	if Steer and abs(car.steer)>0:
+		var form1 = 0.0
+		var form2 = car.steering_geometry[1] -position.x
+		var the
 		var lasttransform = global_transform
 		
-		look_at_from_position(translation,Vector3(car.steering_geometry[0],0,car.steering_geometry[1]),Vector3(0,1,0))
+		look_at_from_position(position,Vector3(car.steering_geometry[0],0,car.steering_geometry[1]),Vector3(0,1,0))
 		global_transform = lasttransform
 		if car.steer>0:
-			rotate_object_local(Vector3(0,1,0),-deg2rad(90.0))
+			rotate_object_local(Vector3(0,1,0),-deg_to_rad(90.0))
 		else:
-			rotate_object_local(Vector3(0,1,0),deg2rad(90.0))
+			rotate_object_local(Vector3(0,1,0),deg_to_rad(90.0))
 		var roter = global_rotation.y
 
-		look_at_from_position(translation,Vector3(car.Steer_Radius,0,car.steering_geometry[1]),Vector3(0,1,0))
+		look_at_from_position(position,Vector3(car.Steer_Radius,0,car.steering_geometry[1]),Vector3(0,1,0))
 		global_transform = lasttransform
-		rotate_object_local(Vector3(0,1,0),deg2rad(90.0))
-		var roter_estimateed = rad2deg(global_rotation.y)
+		rotate_object_local(Vector3(0,1,0),deg_to_rad(90.0))
+		var roter_estimateed = rad_to_deg(global_rotation.y)
 
 		get_parent().steering_angles.append(roter_estimateed)
 		
@@ -192,17 +195,17 @@ func _physics_process(_delta):
 		
 		rotation.y = roter
 
-		rotation_degrees += Vector3(0,-((Toe*(float(translation.x>0)) -Toe*float(translation.x<0))),0)
+		rotation_degrees += Vector3(0,-((Toe*(float(position.x>0)) -Toe*float(position.x<0))),0)
 	else:
-		rotation_degrees = Vector3(0,-((Toe*(float(translation.x>0)) -Toe*float(translation.x<0))),0)
+		rotation_degrees = Vector3(0,-((Toe*(float(position.x>0)) -Toe*float(position.x<0))),0)
 
-	translation = last_translation
+	position = last_translation
 
-	c_camber = Camber +Caster*rotation.y*float(translation.x>0.0) -Caster*rotation.y*float(translation.x<0.0)
+	c_camber = Camber +Caster*rotation.y*float(position.x>0.0) -Caster*rotation.y*float(position.x<0.0)
 
 	directional_force = Vector3(0,0,0)
 	
-	$velocity.translation = Vector3(0,0,0)
+	$velocity.position = Vector3(0,0,0)
 
 	
 	w_size = ((abs(int(TyreSettings["Width (mm)"]))*((abs(int(TyreSettings["Aspect Ratio"]))*2.0)/100.0) + abs(int(TyreSettings["Rim Size (in)"]))*25.4)*0.003269)/2.0
@@ -214,15 +217,15 @@ func _physics_process(_delta):
 	if w_weight_read<1.0:
 		w_weight_read = 1.0
 	
-	$velocity2.global_translation = $geometry.global_translation
+	$velocity2.global_position = $geometry.global_position
 	
-	$velocity/step.global_translation = velocity_last
-	$velocity2/step.global_translation = velocity2_last
-	velocity_last = $velocity.global_translation
-	velocity2_last = $velocity2.global_translation
+	$velocity/step.global_position = velocity_last
+	$velocity2/step.global_position = velocity2_last
+	velocity_last = $velocity.global_position
+	velocity2_last = $velocity2.global_position
 	
-	velocity = -$velocity/step.translation*60.0
-	velocity2 = -$velocity2/step.translation*60.0
+	velocity = -$velocity/step.position*60.0
+	velocity2 = -$velocity2/step.position*60.0
 
 	$velocity.rotation = Vector3(0,0,0)
 	$velocity2.rotation = Vector3(0,0,0)
@@ -344,7 +347,7 @@ func _physics_process(_delta):
 				ground_bump = 1.0
 				ground_bump_up = true
 
-		var suspforce = VitaVehicleSimulation.suspension(self,S_MaxCompression,A_InclineArea,A_ImpactForce,S_RestLength, elasticity,damping,damping_rebound, velocity.y,abs(cast_to.y),global_translation,get_collision_point(),car.mass,ground_bump,ground_bump_height)
+		var suspforce = VitaVehicleSimulation.suspension(self,S_MaxCompression,A_InclineArea,A_ImpactForce,S_RestLength, elasticity,damping,damping_rebound, velocity.y,abs(cast_to.y),global_position,get_collision_point(),car.mass,ground_bump,ground_bump_height)
 		compress = suspforce
 
 		# FRICTION
@@ -365,8 +368,8 @@ func _physics_process(_delta):
 		var distx = velocity2.x
 
 		var compensate2 = suspforce
-		var grav_incline = $geometry.global_transform.basis.orthonormalized().xform_inv(Vector3(0,1,0)).x
-		var grav_incline2 = $geometry.global_transform.basis.orthonormalized().xform_inv(Vector3(0,1,0)).z
+		var grav_incline = $geometry.global_transform.(basis.orthonormalized().inverse() * Vector3(0,1,0)).x
+		var grav_incline2 = $geometry.global_transform.(basis.orthonormalized().inverse() * Vector3(0,1,0)).z
 		
 		compensate = grav_incline2*(compensate2/tyre_stiffness)
 		
@@ -470,7 +473,7 @@ func _physics_process(_delta):
 	# FORCE
 	if is_colliding():
 		hitposition = get_collision_point()
-		directional_force.y = VitaVehicleSimulation.suspension(self,S_MaxCompression,A_InclineArea,A_ImpactForce,S_RestLength, elasticity,damping,damping_rebound, velocity.y,abs(cast_to.y),global_translation,get_collision_point(),car.mass,ground_bump,ground_bump_height)
+		directional_force.y = VitaVehicleSimulation.suspension(self,S_MaxCompression,A_InclineArea,A_ImpactForce,S_RestLength, elasticity,damping,damping_rebound, velocity.y,abs(cast_to.y),global_position,get_collision_point(),car.mass,ground_bump,ground_bump_height)
 
 		# FRICTION
 		var grip = (directional_force.y*tyre_maxgrip)*(ground_friction +fore_friction*CompoundSettings["ForeFriction"])
@@ -488,7 +491,7 @@ func _physics_process(_delta):
 		var distx = velocity2.x
 
 		var compensate2 = directional_force.y
-		var grav_incline = $geometry.global_transform.basis.orthonormalized().xform_inv(Vector3(0,1,0)).x
+		var grav_incline = $geometry.global_transform.(basis.orthonormalized().inverse() * Vector3(0,1,0)).x
 
 		distx -= (grav_incline*(compensate2/tyre_stiffness))*1.1
 
@@ -533,12 +536,12 @@ func _physics_process(_delta):
 			directional_force.x = forcex
 			directional_force.z = forcey
 	else:
-		$geometry.translation = cast_to
+		$geometry.position = cast_to
 
 	output_wv = wv
-	$animation/camber/wheel.rotate_x(deg2rad(wv))
+	$animation/camber/wheel.rotate_x(deg_to_rad(wv))
 
-	$geometry.translation.y += w_size
+	$geometry.position.y += w_size
 
 
 
@@ -549,13 +552,13 @@ func _physics_process(_delta):
 	
 	inned *= inned -A_Geometry4/90.0
 
-	$geometry.translation.x = -inned*translation.x
+	$geometry.position.x = -inned*position.x
 
 
 
 
 
-	$animation/camber.rotation.z = -(deg2rad(-c_camber*float(translation.x<0.0) + c_camber*float(translation.x>0.0)) -deg2rad(-cambered*float(translation.x<0.0) + cambered*float(translation.x>0.0))*A_Geometry2)
+	$animation/camber.rotation.z = -(deg_to_rad(-c_camber*float(position.x<0.0) + c_camber*float(position.x>0.0)) -deg_to_rad(-cambered*float(position.x<0.0) + cambered*float(position.x>0.0))*A_Geometry2)
 
 
 
@@ -564,23 +567,23 @@ func _physics_process(_delta):
 
 	var g
 	
-	axle_position = $geometry.translation.y
+	axle_position = $geometry.position.y
 
 
 	if Solidify_Axles == "":
-		g = ($geometry.translation.y+(abs(cast_to.y) -A_Geometry1))/(abs(translation.x)+A_Geometry3 +1.0)
+		g = ($geometry.position.y+(abs(cast_to.y) -A_Geometry1))/(abs(position.x)+A_Geometry3 +1.0)
 		g /= abs(g) +1.0
 		cambered = (g*90.0) -A_Geometry4
 	else:
-		g = ($geometry.translation.y - get_node(Solidify_Axles).axle_position)/(abs(translation.x) +1.0)
+		g = ($geometry.position.y - get_node(Solidify_Axles).axle_position)/(abs(position.x) +1.0)
 		g /= abs(g) +1.0
 		cambered = (g*90.0)
 	
-	$animation.translation = $geometry.translation
+	$animation.position = $geometry.position
 		
-	var forces = $velocity2.global_transform.basis.orthonormalized().xform(Vector3(0,0,1))*directional_force.z + $velocity2.global_transform.basis.orthonormalized().xform(Vector3(1,0,0))*directional_force.x + $velocity2.global_transform.basis.orthonormalized().xform(Vector3(0,1,0))*directional_force.y
+	var forces = $velocity2.global_transform.basis.orthonormalized() * Vector3(0,0,1)*directional_force.z + $velocity2.global_transform.basis.orthonormalized() * Vector3(1,0,0)*directional_force.x + $velocity2.global_transform.basis.orthonormalized() * Vector3(0,1,0)*directional_force.y
 	
-	car.apply_impulse(hitposition-car.global_transform.origin,forces)
+	car.apply_impulse(forces, hitposition-car.global_transform.origin)
 
 	# torque
 	
@@ -588,8 +591,8 @@ func _physics_process(_delta):
 	
 	wv_ds = wv
 	
-#	car.apply_impulse($geometry.global_transform.origin-car.global_transform.origin +$velocity2.global_transform.basis.orthonormalized().xform(Vector3(0,0,1)),$velocity2.global_transform.basis.orthonormalized().xform(Vector3(0,1,0))*torqed)
-#	car.apply_impulse($geometry.global_transform.origin-car.global_transform.origin -$velocity2.global_transform.basis.orthonormalized().xform(Vector3(0,0,1)),$velocity2.global_transform.basis.orthonormalized().xform(Vector3(0,1,0))*-torqed)
+#	car.apply_impulse($geometry.global_transform.origin-car.global_transform.origin +$velocity2.global_transform.basis.orthonormalized() * Vector3(0,0,1)),$velocity2.global_transform.basis.orthonormalized() * Vector3(0,1,0))*torqed)
+#	car.apply_impulse($geometry.global_transform.origin-car.global_transform.origin -$velocity2.global_transform.basis.orthonormalized() * Vector3(0,0,1)),$velocity2.global_transform.basis.orthonormalized() * Vector3(0,1,0))*-torqed)
 	
 	
 
